@@ -6,107 +6,98 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
+ import React, { useState } from 'react';
+ import {
+   Button,
+   SafeAreaView, StyleSheet,
+   NativeModules,
+   TextInput,
+   Text
+ } from 'react-native';
+ 
+ const { KeyChainModule } = NativeModules;
+ 
+ const App = () => {
+ 
+   const [text, setText] = useState("");
+   const [userName, setUserName] = useState("");
+   const [password, setPassword] = useState("");
+ 
+   return (
+     <SafeAreaView>
+       <Text style={styles.text}>{text}</Text>
+       <TextInput
+         style={styles.textInput}
+         placeholder='userName'
+         value={userName}
+         onChangeText={setUserName}
+       />
+       <TextInput
+         style={styles.textInput}
+         placeholder='password'
+         value={password}
+         onChangeText={setPassword}
+       />
+       <Button
+         style={styles.button}
+         title='추가'
+         onPress={() => {
+          KeyChainModule.save(userName, password)
+          .then(res => {
+            console.log(`res : ${res}`);
+            setText("saved!")
+          })
+          .catch(err => {
+            console.log(`error: ${JSON.stringify(err)}`);
+          })
+         }}
+       />
+       <Button
+         style={styles.button}
+         title='조회'
+         onPress={() => {
+          KeyChainModule.load(userName)
+          .then(res => {
+            console.log(`res : ${JSON.stringify(res)}`);
+            setText(JSON.stringify(res));
+          })
+          .catch(err => {
+            console.log(`error: ${JSON.stringify(err)}`);
+          })
+         }}
+       />
+       <Button
+         style={styles.button}
+         title='삭제'
+         onPress={() => {
+           KeyChainModule.delete(userName)
+           .then(res => {
+             console.log(`res : ${res}`);
+             setText("deleted!");
+           })
+           .catch(err => {
+             console.log(`error: ${JSON.stringify(err)}`);
+           })
+         }}
+       />
+     </SafeAreaView>
+   );
+ };
+ 
+ const styles = StyleSheet.create({
+   text: {
+     textAlign: "center",
+     padding: 10
+   },
+   textInput: {
+     paddingHorizontal: 8,
+     paddingVertical: 4
+   },
+   button: {
+     paddingVertical: 4,
+     paddingHorizontal: 16
+   }
+ });
+ 
+ export default App;
+ 
