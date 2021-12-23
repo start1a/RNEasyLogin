@@ -22,7 +22,6 @@ const AuthBiometric = () => {
     const [isLogin, setIsLogin] = useState(false);
 
     useEffect(() => {
-        checkBiometricStateChanged();
         checkExistBiometricHistory();
     }, [])
 
@@ -31,6 +30,8 @@ const AuthBiometric = () => {
         BiometricController.checkExist(biometricKey)
         .then(isExist => {
             setExistBioId(isExist);
+            if (isExist)
+                checkBiometricStateChanged();
         })
         .catch(err => {
             Alert.alert("CheckBiometricEnrolled", err.message);
