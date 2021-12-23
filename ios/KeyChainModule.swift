@@ -48,7 +48,7 @@ class KeyChainModule: NSObject {
         reject(KeyChainError.unExpectedData.string(), "loading login data has unexpected data.", nil)
         return
       }
-      resolve([ "userName": account, "password": password ])
+      resolve([ "key": account, "data": password ])
     }
     else if (status == errSecItemNotFound) {
       reject(KeyChainError.itemNotFound.string(), "loading login data is not found.", nil)
