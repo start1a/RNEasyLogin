@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import {
-  Button, FlatList, SafeAreaView, StyleSheet, Text, View
+  Button, FlatList, Platform, SafeAreaView, StyleSheet, Text, View
 } from 'react-native';
 import AuthBiometric from './src/Components/AuthBiometric';
 
@@ -37,6 +37,15 @@ const App = () => {
     }
   }
 
+  const availableOnAndroid = () => {
+    if (Platform.OS === 'android') {
+      if (Platform.Version >= 24)
+        return true
+      else return false
+    }
+    return true;
+  }
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -45,7 +54,7 @@ const App = () => {
         data={LOGINTYPES}
         horizontal
         renderItem={({ item }) => (
-          item !== typeLogin && <Button
+          item !== typeLogin && availableOnAndroid() && <Button
             title={item}
             onPress={() => {
               setTypeLogin(item);

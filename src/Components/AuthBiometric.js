@@ -157,10 +157,10 @@ const AuthBiometric = () => {
 
 const BiometricController_Android = class {
     static checkExist = (key) => {
-
+        
     }
 
-    static checkChanged111 = (key) => {
+    static checkChanged = (key) => {
 
     }
 
