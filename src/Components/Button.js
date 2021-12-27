@@ -1,11 +1,17 @@
 import React from 'react';
-import { Button, View } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 
 export const StyledButton = ({ style, title, onPress }) => (
     <View style={style}>
-        <Button
+        <TouchableOpacity
             title={title}
-            onPress={onPress}
-        />
+            onPress={onPress}>
+
+            <Text style={{
+                textAlign: 'center',
+                padding: 8,
+            }}>{title}</Text>
+
+        </TouchableOpacity>
     </View>
 )
